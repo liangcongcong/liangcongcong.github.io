@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Vue+Spring Boot前后端分离实现增删改查 - 梁三叶 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.liangcongcong.com/2019/03/20/Vue-SpringBoot/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">梁三叶&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://www.liangcongcong.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Vue-SpringBoot" title="Vue-SpringBoot">Vue-SpringBoot</a>
+                        
+                    </div>
+                    <h1>Vue+Spring Boot前后端分离实现增删改查</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 梁三叶 on
+                        2019-03-20
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Vue-Spring-boot"><a href="#Vue-Spring-boot" class="headerlink" title="Vue+Spring boot"></a>Vue+Spring boot</h1><h2 id="Vue前端"><a href="#Vue前端" class="headerlink" title="Vue前端"></a>Vue前端</h2><h3 id="Vue新建项目"><a href="#Vue新建项目" class="headerlink" title="Vue新建项目"></a>Vue新建项目</h3><p>当前我是用的是vue脚手架3.4.1版本<br>github地址：<a href="https://github.com/liangcongcong/Spring-Boot-Vue" target="_blank" rel="noopener">https://github.com/liangcongcong/Spring-Boot-Vue</a><br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vue <span class="keyword">create</span> vue-demo <span class="comment">//新建项目</span></span><br><span class="line"> cd vue-demo <span class="comment">//进入项目文件夹下</span></span><br><span class="line">yarn serve <span class="comment">//运行项目</span></span><br></pre></td></tr></table></figure></p>
+<p>默认请况下，在浏览器上访问<a href="http://localhost:8080/，可以看到如下界面" target="_blank" rel="noopener">http://localhost:8080/，可以看到如下界面</a>:</p>
+<p><img src="clipboard.png" alt=""></p>
+<p><strong>项目目录</strong></p>
+<p><img src="clipboard2.png" alt=""></p>
+<p> vue是单页面应用组件，是通过路由跳转实现与其他页面交互。在项目模板中，App.vue相当于外面的最大组件，其他组件均是在其下，利用路由跳转到其他页面。</p>
+<p>App.vue页面如下,主要由三部分组成</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">alt</span>=<span class="string">"Vue logo"</span> <span class="attr">src</span>=<span class="string">"./assets/logo.png"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">HelloWorld</span> <span class="attr">msg</span>=<span class="string">"Welcome to Your Vue.js App"</span>/&gt;</span>//组件路由</span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> HelloWorld <span class="keyword">from</span> <span class="string">'./components/HelloWorld.vue'</span><span class="comment">//组件引入</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="actionscript">  name: <span class="string">'app'</span>,</span></span><br><span class="line"><span class="undefined">  components: &#123;</span></span><br><span class="line"><span class="undefined">    HelloWorld</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#app</span> &#123;</span></span><br><span class="line"><span class="undefined">  font-family: 'Avenir', Helvetica, Arial, sans-serif;</span></span><br><span class="line"><span class="undefined">  -webkit-font-smoothing: antialiased;</span></span><br><span class="line"><span class="undefined">  -moz-osx-font-smoothing: grayscale;</span></span><br><span class="line"><span class="undefined">  text-align: center;</span></span><br><span class="line"><span class="css">  <span class="selector-tag">color</span>: <span class="selector-id">#2c3e50</span>;</span></span><br><span class="line"><span class="undefined">  margin-top: 60px;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>前端页面：</strong></p>
+<p>增删改查按钮均能实现与后端数据库交互<br>表格中的数据均为后端数据库响应http的get请求所返回的。</p>
+<p><img src="clipboard3.png" alt=""></p>
+<h3 id="前端利用axios访问后端api"><a href="#前端利用axios访问后端api" class="headerlink" title="前端利用axios访问后端api"></a>前端利用axios访问后端api</h3><p>Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中。原理：</p>
+<figure class="highlight scilab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// get请求 </span></span><br><span class="line">axios.get(<span class="string">'/user'</span>, &#123;</span><br><span class="line">  params: &#123;</span><br><span class="line">  ID: <span class="number">12345</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">.<span class="keyword">then</span>(<span class="function"><span class="keyword">function</span> <span class="params">(response)</span> &#123;</span></span><br><span class="line">  console.<span class="built_in">log</span>(response);</span><br><span class="line">&#125;)</span><br><span class="line">.<span class="keyword">catch</span>(<span class="function"><span class="keyword">function</span> <span class="params">(error)</span> &#123;</span></span><br><span class="line">  console.<span class="built_in">log</span>(<span class="built_in">error</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// post 请求</span></span><br><span class="line">axios.post(<span class="string">'/user'</span>, &#123;</span><br><span class="line">  firstName: <span class="string">'Fred'</span>,</span><br><span class="line">  lastName: <span class="string">'Flintstone'</span></span><br><span class="line">&#125;)</span><br><span class="line">.<span class="keyword">then</span>(<span class="function"><span class="keyword">function</span> <span class="params">(response)</span> &#123;</span></span><br><span class="line">  console.<span class="built_in">log</span>(response);</span><br><span class="line">&#125;)</span><br><span class="line">.<span class="keyword">catch</span>(<span class="function"><span class="keyword">function</span> <span class="params">(error)</span> &#123;</span></span><br><span class="line">  console.<span class="built_in">log</span>(<span class="built_in">error</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><code>npm install --save axios</code></p>
+<p>安装axios后，<br>在项目中设置js文件与后端进行交互</p>
+<p><img src="clipboard4.png" alt=""></p>
+<ul>
+<li>index.js中放置api请求基础路径</li>
+<li>api.resquest.js中放置axios，http请求配置信息</li>
+<li>user.js中放置实现增删改查方法和http请求</li>
+</ul>
+<p><em>user.js中代码如下</em><br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> HttpRequest <span class="keyword">from</span> <span class="string">'@/axios/api.request'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> const UserQryAction = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> HttpRequest.request(&#123;</span><br><span class="line">    url: <span class="string">'user/'</span>,</span><br><span class="line">    method: <span class="string">'get'</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> const UserAddAction = <span class="function"><span class="params">(parameter)</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> HttpRequest.request(&#123;</span><br><span class="line">    url: <span class="string">'user/'</span>,</span><br><span class="line">    method: <span class="string">'post'</span>,</span><br><span class="line">    params: parameter</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> const UserUpdateAction = <span class="function"><span class="params">(parameter)</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> HttpRequest.request(&#123;</span><br><span class="line">    url: <span class="string">'user/'</span>,</span><br><span class="line">    method: <span class="string">'put'</span>,</span><br><span class="line">    params: parameter</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> const UserDelAction = <span class="function"><span class="params">(parameter)</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> HttpRequest.request(&#123;</span><br><span class="line">    url: <span class="string">'user/'</span>,</span><br><span class="line">    method: <span class="string">'delete'</span>,</span><br><span class="line">    params: &#123;</span><br><span class="line">      no: parameter</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="spring-boot后端"><a href="#spring-boot后端" class="headerlink" title="spring boot后端"></a>spring boot后端</h2><p>定义：从根本上来说springboot就是一些库的集合，它能够被任意项目的构建系统所使用，Spring Boot 是所有基于 Spring 开发的项目的。Spring Boot 的设计是为了让你尽可能快的跑起来 Spring 应用程序并且尽可能减少你的配置文件。</p>
+<h3 id="利用idea新建spring-项目"><a href="#利用idea新建spring-项目" class="headerlink" title="利用idea新建spring 项目"></a>利用idea新建spring 项目</h3><p><strong>项目目录结构：</strong></p>
+<p><img src="clipboard5.png" alt=""></p>
+<p>这里我把springboot项目主要分为五层：model，service,mapper,controller,和config</p>
+<ul>
+<li>model文件夹中为实体类：用户实体类</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> no;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getNo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> no;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNo</span><span class="params">(<span class="keyword">int</span> no)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.no = no;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getEmail</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> email;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmail</span><span class="params">(String email)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.email = email;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>service文件夹为业务层：增，删，改，查四个业务的实现</li>
+</ul>
+<p><strong>接口</strong><br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">UserService</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">AddUser</span>(<span class="params">User user</span>)</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">delUserById</span>(<span class="params">@Param(<span class="string">"no"</span></span>) <span class="keyword">int</span> no)</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">updateUserByNo</span>(<span class="params">User user</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">List&lt;User&gt; <span class="title">getUser</span>(<span class="params"></span>)</span>;</span><br></pre></td></tr></table></figure></p>
+<p><strong>实现类</strong><br><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">@Service</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">UserServiceimpl</span> <span class="title">implements</span> <span class="title">UserService</span> &#123;</span></span><br><span class="line">    @Autowired</span><br><span class="line">    private UserMapper userMapper;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="literal">void</span> AddUser(User user) &#123;</span><br><span class="line">        userMapper.AddUser(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="literal">void</span> delUserById(int <span class="literal">no</span>) &#123;</span><br><span class="line">        userMapper.delUserById(<span class="literal">no</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="literal">void</span> updateUserByNo(User user) &#123;</span><br><span class="line">        userMapper.updateUserByNo(user.getName(),user.getEmail(),user.getNo());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public List&lt;User&gt; getUser() &#123;</span><br><span class="line"></span><br><span class="line">        List&lt;User&gt; userList = userMapper.getUser();</span><br><span class="line"></span><br><span class="line">        <span class="regexp">// lamdba表达式的使用</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">        //</span> List&lt;User&gt; userListOrderBy= userList.stream<span class="function"><span class="params">()</span>.<span class="title">filter</span><span class="params">((User u) -&gt; u.getName() == <span class="string">"1212"</span>)</span>.<span class="title">collect</span><span class="params">(Collectors.toList())</span>;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">        <span class="title">Collections</span>.<span class="title">sort</span><span class="params">(userList,(user1, user2) -&gt; user1.getNo() - user2.getNo())</span>;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">        <span class="title">return</span> <span class="title">userList</span>;</span></span><br><span class="line"><span class="function">    &#125;</span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>mapper文件夹为交互层：对数据库的业务操作</li>
+</ul>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@Mapper</span></span><br><span class="line">public interface UserMapper &#123;</span><br><span class="line">    <span class="variable">@Insert</span>(&#123;<span class="string">"insert into user(no, name, email) values(#&#123;no&#125;, #&#123;name&#125;, #&#123;email&#125;)"</span>&#125;)</span><br><span class="line">    void AddUser(User userInfo);</span><br><span class="line"></span><br><span class="line">    <span class="variable">@Delete</span>(<span class="string">"delete from user where no=#&#123;no&#125;"</span>)</span><br><span class="line">    void delUserById(<span class="variable">@Param</span>(<span class="string">"no"</span>) int no);</span><br><span class="line"></span><br><span class="line">    <span class="variable">@Update</span>(<span class="string">"update user set name = #&#123;name&#125;, email = #&#123;email&#125; where no = #&#123;no&#125;"</span>)</span><br><span class="line">    void updateUserByNo(<span class="variable">@Param</span>(<span class="string">"name"</span>) String name, <span class="variable">@Param</span>(<span class="string">"email"</span>) String email, <span class="variable">@Param</span>(<span class="string">"no"</span>) int no);</span><br><span class="line"></span><br><span class="line">    <span class="variable">@Select</span>(<span class="string">"select * from user"</span>)</span><br><span class="line">    List&lt;User&gt; getUser();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>controller文件夹为控制层：用户可以直接访问到的地方，与前端进行交互</li>
+</ul>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@RestController</span><span class="comment">//处理http请求，用来响应页面。</span></span><br><span class="line"><span class="variable">@RequestMapping</span>(<span class="string">"/api"</span>)<span class="comment">//配置url映射</span></span><br><span class="line">public class UserController &#123;</span><br><span class="line">    <span class="variable">@Autowired</span></span><br><span class="line">    private UserService userService;</span><br><span class="line"></span><br><span class="line">    <span class="variable">@RequestMapping</span>(value =<span class="string">"/user"</span>, method = RequestMethod.GET)</span><br><span class="line">    public List&lt;User&gt; UserQry() &#123;</span><br><span class="line">        <span class="selector-tag">return</span> <span class="selector-tag">userService</span><span class="selector-class">.getUser</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @<span class="selector-tag">RequestMapping</span>(value =<span class="string">"/user"</span>, method = RequestMethod.POST)</span><br><span class="line">    <span class="selector-tag">public</span> <span class="selector-tag">void</span> <span class="selector-tag">UserAdd</span>(User user)&#123;</span><br><span class="line">        <span class="selector-tag">userService</span><span class="selector-class">.AddUser</span>(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @<span class="selector-tag">RequestMapping</span>(value =<span class="string">"/user"</span>, method = RequestMethod.PUT)</span><br><span class="line">    <span class="selector-tag">public</span> <span class="selector-tag">void</span> <span class="selector-tag">UserUpdate</span>(User user)&#123;</span><br><span class="line">        <span class="selector-tag">userService</span><span class="selector-class">.updateUserByNo</span>(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @<span class="selector-tag">RequestMapping</span>(value =<span class="string">"/user"</span>, method = RequestMethod.DELETE)</span><br><span class="line">    <span class="selector-tag">public</span> <span class="selector-tag">void</span> <span class="selector-tag">UserDel</span>(<span class="variable">@RequestParam</span>(value=<span class="string">"no"</span>) int no)&#123;</span><br><span class="line">        <span class="selector-tag">userService</span><span class="selector-class">.delUserById</span>(no);&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>config文件夹为配置层：配置跨域处理相关信息</li>
+</ul>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@AutoConfigureAfter(DispatcherServletAutoConfiguration.class)</span><br><span class="line">public class WebConfiguration extends WebMvcConfigurationSupport &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">        registry.addResourceHandler(<span class="string">"/**"</span>).addResourceLocations(<span class="string">"classpath:/static/"</span>);</span><br><span class="line">        registry.addResourceHandler(<span class="string">"swagger-ui.html"</span>)</span><br><span class="line">                .addResourceLocations(<span class="string">"classpath:/META-INF/resources/"</span>);</span><br><span class="line">        registry.addResourceHandler(<span class="string">"/webjars/**"</span>)</span><br><span class="line">                .addResourceLocations(<span class="string">"classpath:/META-INF/resources/webjars/"</span>);</span><br><span class="line">        super.addResourceHandlers(registry);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * CROS跨域的处理</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void addCorsMappings(CorsRegistry registry) &#123;</span><br><span class="line">        registry.addMapping(<span class="string">"/**"</span>)</span><br><span class="line">                .allowedOrigins(<span class="string">"*"</span>)</span><br><span class="line">                .allowedMethods(<span class="string">"<span class="keyword">GET</span>"</span>, <span class="string">"<span class="keyword">POST</span>"</span>, <span class="string">"<span class="keyword">PUT</span>"</span>, <span class="string">"<span class="keyword">OPTIONS</span>"</span>, <span class="string">"<span class="keyword">DELETE</span>"</span>, <span class="string">"<span class="keyword">PATCH</span>"</span>)</span><br><span class="line">                .allowCredentials(true).maxAge(<span class="number">3600</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="与前端进行交互"><a href="#与前端进行交互" class="headerlink" title="与前端进行交互"></a>与前端进行交互</h3><p>1、前端的Http请求会到controller这一层，而controller层根据相应路由信息注解会跳转到相应的类。<br>2、在框架经过处理以后，最终调用的是mapper层。<br>3、在执行相应的Sql以后，将会依次返回到controller层，然后在Http的返回中将会以Json串对象返回给前端的调用方。<br>4、前端在Http的response中拿到返回的值，然后再进行一些处理</p>
+<h3 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spring<span class="selector-class">.datasource</span><span class="selector-class">.driver-class-name</span>=com<span class="selector-class">.mysql</span><span class="selector-class">.jdbc</span><span class="selector-class">.Driver</span></span><br><span class="line">spring<span class="selector-class">.datasource</span><span class="selector-class">.url</span>=jdbc:mysql:<span class="comment">//127.0.0.1:3306/lcc?serverTimezone=UTC</span></span><br><span class="line">spring<span class="selector-class">.datasource</span><span class="selector-class">.username</span>=root</span><br><span class="line">spring<span class="selector-class">.datasource</span><span class="selector-class">.password</span>=root</span><br></pre></td></tr></table></figure>
+<h3 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h3><ul>
+<li><strong>@SpringBootApplication</strong><br>@SpringBootApplication = @Configuration + @EnableAutoConfiguration + @ComponentScan，简化程序的配置</li>
+<li><strong>@Configuration</strong><br>注解在类上，表示这是一个IOC容器，相当于spring的配置文件，IOC容器的配置类。</li>
+<li><strong>@ComponentScan</strong><br>如果扫描到有@Component @Controller @Service等这些注解的类，则把这些类注册为bean。@Controller, @Service, @Repository是@Component的细化，这三个注解比@Component带有更多的语义，它们分别对应了控制层、服务层、持久层的类。</li>
+<li><strong>@RestController</strong><br>告诉Spring以JSON字符串的形式渲染结果，并直接返回给调用者。</li>
+<li><strong>@RequestMapping</strong><br>告诉Spring这是一个用来处理请求地址映射的注解。</li>
+<li><strong>@Autowired</strong><br>可以对类成员变量、方法及构造函数进行标注。从IoC容器中去查找，并自动装配。（去除@Autowired可以运行一下试试）</li>
+<li>Mybatis的 <strong>@Mapper</strong><br>注解的接口生成一个实现类</li>
+</ul>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2019/03/22/Http-Protocol/" data-toggle="tooltip" data-placement="top" title="Http请求之GET,POST,PUT,DELETE">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2019/01/10/Vue-Component/" data-toggle="tooltip" data-placement="top" title="Vue-Component">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Vue-SpringBoot" title="Vue-SpringBoot">Vue-SpringBoot</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://github.com/liangcongcong" target="_blank">梁三叶&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "leaf-blog";
+    var disqus_identifier = "http://www.liangcongcong.com/2019/03/20/Vue-SpringBoot/";
+    var disqus_url = "http://www.liangcongcong.com/2019/03/20/Vue-SpringBoot/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/Demonbane_x">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Demonbane">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Demonbane">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/demonbane.cn">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/liangcongcong">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/liangcongcong">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 梁三叶&#39;s Blog 2019 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="https://github.com/liangcongcong/liangcongcong.github.io.git">梁聪聪</a> | 
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=liangcongcong&repo=liangcongcong.github.io&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.liangcongcong.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-49627206-1';
+    var _gaDomain = 'huangxuan.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '4cc1f2d8f3067386cc5cdb626a202900';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;    
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://www.liangcongcong.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
